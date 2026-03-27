@@ -1,0 +1,15 @@
+@dashboard_routes.route('/charts/<int:user_id>', methods=['GET'])
+def charts(user_id):
+    scores = Score.query.filter_by(user_id=user_id).all()
+
+    data = {}
+
+    for s in scores:
+        if s.language not in data:
+            data[s.language] = 0
+        data[s.language] += s.score
+
+    return jsonify({
+        "labels": list(data.keys()),
+        "values": list(data.values())
+    })
